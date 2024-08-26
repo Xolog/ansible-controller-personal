@@ -1,0 +1,8 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: Configure traefik on target hosts
+  hosts: all
+  remote_user: root
+  become: yes
+  roles:
+    - ansible-traefik

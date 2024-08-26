@@ -1,0 +1,59 @@
+#!/usr/bin/env -S ansible-playbook 
+#
+# Playbook to install and run shadowsocks container on
+# target nodes. Run it like usual executable script:
+#
+# > ./run-shadowsocks.yml
+
+---
+- name: Configure target servers
+  hosts: shadowsocks_servers
+  become: yes
+  become_user: root
+
+  tasks:
+    - name: Install shadowsocks-libev package
+      ansible.builtin.apt:
+        name: shadowsocks-libev
+        state: present
+
+    - name: Creating a file with content
+      copy:
+        dest: "/etc/shadowsocks-libev/config.json"
+        content: |
+          {
+              "server":["::1", "127.0.0.1", "{{ shadowsocks_server_address }}"],
+              "mode":"tcp_and_udp",
+              "server_port":{{ shadowsocks_port }},
+              "local_port":1080,
+              "password":"{{ shadowsocks_password }}",
+              "timeout":60,
+              "method":"chacha20-ietf-poly1305"
+          }
+
+    - name: Restart service to apply confs
+      systemd:
+        state: restarted
+        name: shadowsocks-libev
+
+    # - name: Start shadowsocks container
+    #   docker_compose:
+    #     state: present
+    #     project_name: shadowsocks
+    #     definition:
+    #       version: '3'
+    #       services:
+    #         shadowsocks:
+    #           image: shadowsocks/shadowsocks-libev:latest
+    #           environment:
+    #             - PASSWORD={{ shadowsocks_password }}
+    #             - SERVER_ADDR={{ shadowsocks_server_address }}
+    #             - METHOD=aes-256-cfb
+    #             - ARGS=--fast-open
+    #           ports:
+    #             - "8388:8390"
+    #             - "8388:8390/udp"
+    #           restart: unless-stopped
+
+      tags:
+        - shadowsocks

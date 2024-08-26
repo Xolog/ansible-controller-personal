@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bento</title>
+    <link rel=" shortcut icon" type="image/png" href="icons/favicon.png" />
+
+    <link rel="stylesheet" href="css/style.css" />
+
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://kit.fontawesome.com/883140fc22.js" crossorigin="anonymous"></script>
+  </head>
+
+  <body class="">
+    <button id="themeButton">
+      <i id="themeButton__icon" data-feather="moon"></i>
+    </button>
+    <div class="container">
+      <!-- Clock and Greetings  -->
+
+      <div class="timeBlock">
+        <div class="clock">
+          <div id="hour" class=""></div>
+          <div id="separator" class=""></div>
+          <div id="minutes" class=""></div>
+        </div>
+        <div id="greetings" class=""></div>
+      </div>
+
+      <!-- Date and Weather  -->
+
+      <div class="weatherBlock">
+        <div class="weatherBlock__date">
+          <div id="month" class=""></div>
+          <div id="day" class=""></div>
+        </div>
+        <div class="weatherBlock__weather">
+          <div class="weather-icon">
+            <img src="icons/OneDark/unknown.png" />
+          </div>
+          <div class="temperature-value">
+            <p class="">- °<span class="g">c</span></p>
+          </div>
+          <div class="temperature-description">
+            <p class=""></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Buttons Links  -->
+
+      <div class="buttonLink">
+      <a
+        target="blank"
+        href="https://google.com"
+        class="buttonLink__link card buttonLink__link-1"
+        style="text-decoration: none;"
+        >
+          <i class="buttonLink__icon fa-brands fa-google" style="font-size:48px;"></i>
+        </a>
+        <a
+          href="https://ya.ru"
+          target="blank"
+          class="buttonLink__link card buttonLink__link-2"
+          style="text-decoration: none;"
+        >
+          <i class="buttonLink__icon fa-brands fa-yandex-international" style="font-size:48px;"></i>
+        </a>
+        <a
+          target="blank"
+          href="https://duckduckgo.com"
+          class="buttonLink__link card buttonLink__link-5"
+          style="text-decoration: none;"
+        >
+          <i style="font-size:48px;justify-content:center;color:var(--fg);">DDG</i>
+        </a>
+        <a
+          target="blank"
+          href="https://github.com"
+          class="buttonLink__link card buttonLink__link-4"
+          style="text-decoration: none;"
+        >
+          <i class="buttonLink__icon fa-brands fa-github" style="font-size:48px;"></i>
+        </a>
+        <a
+          target="blank"
+          href="https://music.yandex.ru"
+          class="buttonLink__link card buttonLink__link-3"
+          style="text-decoration: none;"
+        >
+          <i class="buttonLink__icon fa-solid fa-music" style="font-size:48px;"></i>
+        </a>
+        <a
+          href="https://mail.google.com"
+          target="blank"
+          class="buttonLink__link card buttonLink__link-6"
+          style="text-decoration: none;"
+        >
+          <i class="buttonLink__icon fa-solid fa-envelope" style="font-size:48px;"></i>
+        </a>
+      </div>
+
+      <!-- Lists  -->
+
+      <div class="card list list__1">
+        <i class="list__head fa-solid fa-server" style="font-size:36px;"></i>
+        <a
+          target="blank"
+          href="https://nextcloud.mnhycr.ru"
+          class="list__link"
+          >NextCloud</a
+        >
+        <a
+          target="blank"
+          href="https://deluge.mnhycr.ru"
+          class="list__link"
+          >Deluge</a
+        >
+        <a
+          target="blank"
+          href="https://bitwarden.mnhycr.ru"
+          class="list__link"
+          >Bitwarden</a
+        >
+        <a
+          target="blank"
+          href="https://navidrome.mnhycr.ru"
+          class="list__link"
+          >Navidrome</a
+        >
+      </div>
+
+      <div class="card list list__2">
+        <i class="list__head fa-solid fa-person-digging" style="font-size:36px;"></i>
+        <a href="https://gitlab.oom.ag" target="blank" class="list__link"
+          >Gitlab</a
+        >
+        <a href="https://harbor.oom.ag" target="blank" class="list__link"
+          >Harbor</a
+        >
+        <a
+          href="https://grafana.infra.oom.ag" target="blank" class="list__link"
+          >Grafana</a
+        >
+        <a
+          href="https://bw.oom.ag" target="blank" class="list__link"
+          >Bitwarden</a
+        >
+      </div>
+    </div>
+
+    <!-- Scrips  -->
+
+    <script src="js/time.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/greeting.js"></script>
+    <script src="js/weather.js"></script>
+    <script>
+      feather.replace();
+    </script>
+  </body>
+
+  <!-- Coded and designed by Miguel R. Ávila: https://github.com/MiguelRAvila -->
+</html>

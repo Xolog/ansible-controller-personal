@@ -1,0 +1,14 @@
+navidrome_image_tag: latest
+navidrome_container_name: navidrome
+navidrome_data_folder: /data/navidrome
+navidrome_music_folder: /mnt/nextcloud/music
+navidrome_env:
+  - ND_SCANSCHEDULE=1h
+  - ND_LOGLEVEL=info  
+  - ND_SESSIONTIMEOUT=24h
+  - ND_DEFAULTLANGUAGE=ru
+  - ND_DEFAULTTHEME=Spotify-ish
+  - ND_LASTFM_ENABLED=true
+  - ND_LASTFM_APIKEY=c47c19b901461be434a6a06a05ac23e9
+  - ND_LASTFM_SECRET=c7d86b1a6a88ce55479976cfbe40a3a6
+  - ND_LASTFM_LANGUAGE=ru

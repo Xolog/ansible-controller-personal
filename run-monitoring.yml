@@ -1,0 +1,7 @@
+#!/usr/bin/env ansible-playbook
+- name: Deploy monitoring service
+  hosts: all
+  remote_user: root
+  become: yes
+  roles:
+    - one_mind.easiest_ssh_monitoring

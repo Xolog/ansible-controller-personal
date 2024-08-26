@@ -1,0 +1,7 @@
+#!/usr/bin/env ansible-playbook
+- name: Install VPN server and create some client certs for it
+  hosts: vpns
+  remote_user: root
+  become: yes
+  roles:
+    - vpnserver

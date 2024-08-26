@@ -1,0 +1,38 @@
+#!/usr/bin/env -S ansible-playbook 
+#
+# Playbook to install and run Deluge container on
+# target nodes. Run it like usual executable script:
+#
+# > ./run-deluge.yml
+
+---
+- name: Configure target servers
+  hosts: deluge_servers
+  become: yes
+  become_user: root
+
+  tasks:
+    - name: Start deluge container
+      docker_compose:
+        state: present
+        project_name: deluge
+        definition:
+          version: "2.1"
+          services:
+            deluge:
+              image: "lscr.io/linuxserver/deluge:{{ deluge_image_tag }}"
+              container_name: "{{ deluge_container_name }}"
+              environment:
+                - PUID=33
+                - PGID=0
+              volumes:
+                - "{{ deluge_data_volume }}/conf:/config"
+                - "{{ deluge_downloads_volume }}:/downloads"
+              ports:
+                - 8112:8112
+                - 6881:6881
+                - 6881:6881/udp
+              restart: unless-stopped
+
+      tags:
+        - nextcloud

@@ -1,0 +1,83 @@
+#!/usr/bin/env ansible-playbook 
+---
+- name: Configure target servers
+  hosts: "all"
+  gather_facts: yes
+  become: yes
+  become_user: root
+
+  tasks:
+    - name: Ensure packages is installed
+      apt: 
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      with_items: "{{ packages }}"
+      tags:
+        - packages
+
+    - name: Set hostname
+      hostname:
+        name: "{{ dns_hostname }}"
+      tags:
+        - hostname
+
+    - name: Add hostname to hosts
+      lineinfile:
+        path: /etc/hosts
+        regexp: '^127\.0\.1\.1'
+        line: "127.0.1.1 {{ dns_hostname }}"
+        owner: root
+        group: root
+        mode: 0644
+        insertafter: '^127\.0\.0\.1'
+      tags:
+        - hostname
+
+    - name: Create users
+      user:
+        name: "{{ item.value.name }}"
+        comment: "{{ item.value.comment }}"
+        groups: "{{ item.value.groups }}"
+        password: "{{ item.value.password }}"
+        shell: /bin/bash
+      with_items: "{{ users | dict2items }}"
+      tags:
+        - users
+    
+    - name: Ensure ssh directory exist
+      file:
+        path: "/home/{{ item.value.name }}/.ssh"
+        state: directory
+        owner: "{{ item.value.name }}"
+      with_items: "{{ users | dict2items }}"
+      tags:
+        - users
+
+    - name: Ensure users have a ssh-keys
+      copy:
+        src: "ssh_keys/{{ item.value.ssh_key }}.pub"
+        dest: "/home/{{ item.value.name }}/.ssh/authorized_keys"
+        owner: "{{ item.value.name }}"
+      with_items: "{{ users | dict2items }}"
+      tags:
+        - users
+
+    - name: Ensure ssh-authorization is allowed only with public keys
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+      with_items:
+        - {regexp: ".*PermitRootLogin", line: "PermitRootLogin no"}
+        - {regexp: ".*PubkeyAuthentication", line: "PubkeyAuthentication yes"}
+        - {regexp: ".*PasswordAuthentication", line: "PasswordAuthentication no"}
+      tags:
+        - sshd
+
+    - name: Restart sshd
+      systemd:
+        name: sshd
+        state: restarted
+      tags:
+        - sshd

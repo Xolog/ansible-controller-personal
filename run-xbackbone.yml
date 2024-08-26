@@ -1,0 +1,34 @@
+#!/usr/bin/env -S ansible-playbook 
+#
+# Playbook to install and run xbackbone container on
+# target nodes. Run it like usual executable script:
+#
+# > ./run-xbackbone.yml
+
+---
+- name: Configure target servers
+  hosts: xbackbone_servers
+  become: yes
+  become_user: root
+
+  tasks:
+    - name: Start xbackbone container
+      docker_compose:
+        state: present
+        project_name: xbackbone
+        definition:
+          version: '3.5'
+          services:
+            xbackbone:
+              image: "{{ xbackbone_image }}"
+              container_name: "{{ xbackbone_container_name }}"
+              environment:
+                - PUID=1000
+                - PGID=1000
+              volumes:
+                - "{{ xbackbone_config_dir }}:/config"
+              ports:
+                - "{{ xbackbone_listen_address }}:80"
+              restart: unless-stopped
+      tags:
+      - xbackbone

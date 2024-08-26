@@ -1,0 +1,43 @@
+---
+ansible_ip: 91.224.87.6
+# ansible_host: "gateway.mnhycr.ru"
+ansible_host: "91.224.87.6"
+ansible_port: 22
+ansible_user: drazin
+ansible_sudo_pass: "{{ vault_admin_password }}" 
+ansible_become: true
+
+dns_hostname: gateway
+packages:
+  - iftop
+  - htop
+  - curl
+users:
+  drazin: "{{ vault_drazin }}"
+
+# OpenVPN settings
+server_port: 1984
+server_name: "gateway.mnhycr.ru"
+real_server_name: "gateway.mnhycr.ru"
+dev_type: tun
+allow_masquerade: True
+additional_pushes:
+ - "redirect-gateway def1"
+vpn_network: 10.10.0.0
+vpn_netmask: 255.255.255.0
+vpn_cidr: 24
+dns_pushes:
+  - 8.8.8.8
+  - 8.8.4.4
+auth: SHA512
+cipher: AES-256-CBC
+keys_action: issue
+iptables_configure: True
+cert_prefix: "gateway_"
+use_ldap: False
+enable_logging: True
+
+enable_2fa: False
+client_2fa_server_description: gateway
+
+clients: "{{ vault_clients }}" 

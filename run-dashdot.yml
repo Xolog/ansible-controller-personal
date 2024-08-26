@@ -1,0 +1,34 @@
+#!/usr/bin/env -S ansible-playbook 
+#
+# Playbook to install and run dashdot container on
+# target nodes. Run it like usual executable script:
+#
+# > ./run-dashdot.yml
+
+---
+- name: Configure target servers
+  hosts: dashdot_servers
+  become: yes
+  become_user: root
+
+  tasks:
+    - name: Start dashdot container
+      docker_compose:
+        state: present
+        project_name: dashdot
+        definition:
+          version: '3.5'
+          services:
+            dashdot:
+              image: mauricenino/dashdot
+              container_name: "{{ dashdot_container_name | default('dashdot') }}"
+              privileged: true
+              ports:
+                - "{{ dashdot_port | default('127.0.0.1:80:3001') }}"
+              # volumes:
+              #   - /:/mnt/host:ro
+              restart: 'always'
+              environment: "{{ dashdot_env | default('dashdot') }}"
+
+      tags:
+        - dashdot

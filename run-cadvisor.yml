@@ -1,0 +1,7 @@
+#!/usr/bin/env ansible-playbook
+- name: Install cadvisor on target host
+  hosts: all
+  remote_user: root
+  become: yes
+  roles:
+    - one_mind.cadvisor_ansible_role

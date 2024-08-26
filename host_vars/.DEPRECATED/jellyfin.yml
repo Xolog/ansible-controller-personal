@@ -1,0 +1,4 @@
+jellyfin_container_name: jellyfin
+jellyfin_config_dir: /data/jellyfin/config 
+jellyfin_cache_dir: /data/jellyfin/cache
+jellyfin_media_dir: /data/nextcloud-mount/torrents

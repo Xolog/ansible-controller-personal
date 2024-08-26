@@ -1,0 +1,8 @@
+bento:
+  build: .
+  container_name: bento
+  ports:
+   - "127.0.0.1:8081:80"
+  environment:
+   - NGINX_HOST=bento.mnhycr.ru
+   - NGINX_PORT=80

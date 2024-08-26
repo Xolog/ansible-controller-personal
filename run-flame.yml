@@ -1,0 +1,35 @@
+#!/usr/bin/env -S ansible-playbook 
+#
+# Playbook to install and run Flame container on
+# target nodes. Run it like usual executable script:
+#
+# > ./run-flame.yml
+
+---
+- name: Configure target servers
+  hosts: flame_servers
+  become: yes
+  become_user: root
+
+  tasks:
+    - name: Start flame container
+      docker_compose:
+        state: present
+        project_name: flame
+        definition:
+          version: "3.6"
+          services:
+            flame:
+              image: pawelmalak/flame
+              container_name: flame
+              volumes:
+                - /data/flame:/app/data
+                - /var/run/docker.sock:/var/run/docker.sock
+              ports:
+                - 5005:5005
+              environment:
+                - "PASSWORD={{ vault_flame_password }}"
+              restart: unless-stopped
+
+      tags:
+        - flame

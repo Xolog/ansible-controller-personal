@@ -1,0 +1,22 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: Configure target servers
+  hosts: docker_hosts
+  become: yes
+  remote_user: root
+
+  roles:
+    - { role: sorrowless.docker, tags: ['docker'] }
+
+  tasks:
+    - name: Ensure clearing docker images
+      cron:
+        name: "Clear docker images"
+        user: "root"
+        minute: "0"
+        hour: "2"
+        weekday: "6"
+        job: "/usr/bin/docker image prune -a"
+        state: present
+      tags:
+        - clean

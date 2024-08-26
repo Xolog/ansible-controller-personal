@@ -1,0 +1,38 @@
+#!/usr/bin/env -S ansible-playbook 
+#
+# Playbook to install and run dnsmasq container on
+# target nodes. Run it like usual executable script:
+#
+# > ./run-dnsmasq.yml
+
+---
+- name: Configure target servers
+  hosts: dnsmasq_servers
+  become: yes
+  become_user: root
+
+  tasks:
+    - name: Ensure dnsmasq conf
+      copy:
+        content: "{{ dnsmasq_conf }}" 
+        dest: "{{ dnsmasq_conf_path }}"
+
+    - name: Start dnsmasq container
+      docker_compose:
+        state: present
+        restarted: yes
+        project_name: dnsmasq
+        definition:
+          version: "3"
+          services:
+            dnsmasq:
+              image: mirror.gcr.io/dockurr/dnsmasq
+              container_name: "{{ dnsmasq_container_name }}"
+              network_mode: host
+              cap_add:
+                - NET_ADMIN
+              volumes:
+                - "{{ dnsmasq_conf_path }}:/etc/dnsmasq.conf"
+
+      tags:
+        - dnsmasq

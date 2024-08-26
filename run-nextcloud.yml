@@ -1,0 +1,37 @@
+#!/usr/bin/env -S ansible-playbook 
+#
+# Playbook to install and run Nextcloud on
+# target nodes. Run it like usual executable script:
+#
+# > ./run-nextcloud.yml
+
+---
+- name: Configure target servers
+  hosts: nextcloud_servers
+  become: yes
+  become_user: root
+
+  tasks:
+    - name: Start nextcloud aio mastercontainer
+      docker_compose:
+        state: present
+        project_name: nextcloud
+        definition:
+          version: '3'
+          volumes:
+            aio_mastercontainer:
+          services:
+            nextcloud:
+              image: "nextcloud/all-in-one:{{ nextcloud_aio_master_version }}"
+              restart: always
+              container_name: "{{ nextcloud_container_name }}"
+              volumes:
+                - aio_mastercontainer:/mnt/docker-aio-config 
+                - /var/run/docker.sock:/var/run/docker.sock:ro 
+              ports:
+                - 8080:8080
+                - 8443:8443
+              environment: "{{ nextcloud_mastercontainer_env }}" 
+
+      tags:
+        - nextcloud

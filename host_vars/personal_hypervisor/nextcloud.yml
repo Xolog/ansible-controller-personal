@@ -1,0 +1,9 @@
+nextcloud_aio_master_version: latest
+nextcloud_container_name: nextcloud-aio-mastercontainer
+nextcloud_mastercontainer_env:
+  - APACHE_PORT=1100
+  - APACHE_IP_BINDING=0.0.0.0 
+  - NEXTCLOUD_MOUNT=/data/nextcloud-mount 
+  - NEXTCLOUD_UPLOAD_LIMIT=100000G 
+  - NEXTCLOUD_MEMORY_LIMIT=8192M 
+  - NEXTCLOUD_DATADIR=/data/nextcloud

@@ -1,0 +1,6 @@
+---
+seafile_mysql_data_path: /data/seafile/db
+seafile_http_port: 8888
+seafile_data_path: /data/seafile
+seafile_admin_mail: mnhycr@gmail.com
+seafile_hostname: https://files.mnhycr.ru

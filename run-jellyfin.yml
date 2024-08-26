@@ -1,0 +1,34 @@
+#!/usr/bin/env -S ansible-playbook 
+#
+# Playbook to install and run jellyfin container on
+# target nodes. Run it like usual executable script:
+#
+# > ./run-jellyfin.yml
+
+---
+- name: Configure target servers
+  hosts: jellyfin_servers
+  become: yes
+  become_user: root
+
+  tasks:
+    - name: Start jellyfin container
+      docker_compose:
+        state: present
+        project_name: jellyfin
+        definition:
+          version: '3.5'
+          services:
+            jellyfin:
+              image: jellyfin/jellyfin
+              container_name: "{{ jellyfin_container_name }}"
+              ports:
+                - 8096:8096
+              volumes:
+                - "{{ jellyfin_config_dir }}:/config"
+                - "{{ jellyfin_cache_dir }}:/cache"
+                - "{{ jellyfin_media_dir }}:/media:ro"
+              restart: 'always'
+
+      tags:
+        - jellyfin

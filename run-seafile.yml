@@ -1,0 +1,66 @@
+#!/usr/bin/env -S ansible-playbook 
+#
+# Playbook to install and run Seafile container on
+# target nodes. Run it like usual executable script:
+#
+# > ./run-seafile.yml
+
+---
+- name: Configure target servers
+  hosts: seafile_servers
+  become: yes
+  become_user: root
+
+  tasks:
+    - name: Start seafile container
+      docker_compose:
+        state: present
+        project_name: seafile
+        definition:
+          version: "3.6"
+          services:
+            db:
+              image: mariadb:10.11
+              container_name: seafile-mysql
+              environment:
+                - "MYSQL_ROOT_PASSWORD={{ vault_seafile_mysql_passwd }}"
+                - MYSQL_LOG_CONSOLE=true
+                - MARIADB_AUTO_UPGRADE=1
+              volumes:
+                - "{{ seafile_mysql_data_path }}:/var/lib/mysql"
+              networks:
+                - seafile-net
+
+            memcached:
+              image: memcached:1.6.18
+              container_name: seafile-memcached
+              entrypoint: memcached -m 256
+              networks:
+                - seafile-net
+
+            seafile:
+              image: seafileltd/seafile-mc:11.0-latest
+              container_name: seafile
+              ports:
+                - "{{ seafile_http_port }}:80"
+              volumes:
+                - "{{ seafile_data_path }}:/shared"
+              environment:
+                - DB_HOST=db
+                - "DB_ROOT_PASSWD={{ vault_seafile_mysql_passwd }}"
+                - TIME_ZONE=Etc/UTC
+                - "SEAFILE_ADMIN_EMAIL={{ seafile_admin_mail }}"
+                - "SEAFILE_ADMIN_PASSWORD={{ vault_seafile_admin_pass }}"
+                - "SEAFILE_SERVER_HOSTNAME={{ seafile_hostname }}"
+                - SEAFILE_SERVER_LETSENCRYPT=false
+              depends_on:
+                - db
+                - memcached
+              networks:
+                - seafile-net
+
+          networks:
+            seafile-net:
+
+      tags:
+        - seafile

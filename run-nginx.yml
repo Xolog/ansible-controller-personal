@@ -1,0 +1,7 @@
+#!/usr/bin/env ansible-playbook
+- name: Install nginx on target host
+  hosts: all
+  remote_user: root
+  become: yes
+  roles:
+    - sorrowless.nginx

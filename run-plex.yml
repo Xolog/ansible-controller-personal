@@ -1,0 +1,37 @@
+#!/usr/bin/env -S ansible-playbook 
+#
+# Playbook to install and run Plex container on
+# target nodes. Run it like usual executable script:
+#
+# > ./run-plex.yml
+
+---
+- name: Configure target servers
+  hosts: plex_servers
+  become: yes
+  become_user: root
+
+  tasks:
+    - name: Start plex container
+      docker_compose:
+        state: present
+        project_name: plex
+        definition:
+          version: "2.1"
+          services:
+            plex:
+              image: lscr.io/linuxserver/plex:1.40.2
+              container_name: plex
+              network_mode: host
+              environment:
+                - PUID=33
+                - PGID=0
+                - TZ=Etc/UTC
+                - VERSION=docker
+              volumes:
+                - /data/plex:/config
+                - /data/nextcloud-mount/torrents:/movies
+              restart: unless-stopped
+
+      tags:
+        - plex

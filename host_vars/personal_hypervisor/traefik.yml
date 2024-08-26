@@ -1,0 +1,93 @@
+---
+traefik_host_network_mode_host: True
+traefik_dashboard: True
+
+traefik_tls_acme_mail: one.914.mind@gmail.com
+
+traefik_file_provider: 
+  filename: "{{ traefik_dir }}/provider.yml"
+  watch: True
+
+traefik_fp_routers:
+  route-flame:
+    middlewares: 
+    - flame-auth
+    entryPoints:
+    - https
+    service: flame
+    rule: Host(`mnhycr.ru`)
+    tls:
+      certResolver: letsEncrypt
+  route-nextcloud:
+    entryPoints:
+    - https
+    service: nextcloud
+    rule: Host(`nextcloud.mnhycr.ru`)
+    tls:
+      certResolver: letsEncrypt
+  route-deluge:
+    entryPoints:
+    - https
+    service: deluge
+    rule: Host(`deluge.mnhycr.ru`)
+    tls:
+      certResolver: letsEncrypt
+  route-bitwarden:
+    entryPoints:
+    - https
+    service: bitwarden
+    rule: Host(`bitwarden.mnhycr.ru`)
+    tls:
+      certResolver: letsEncrypt
+  route-plex:
+    entryPoints:
+    - https
+    service: plex
+    rule: Host(`plex.mnhycr.ru`)
+    tls:
+      certResolver: letsEncrypt
+  route-dash:
+    entryPoints:
+    - https
+    service: dash
+    rule: Host(`dash.mnhycr.ru`)
+    tls:
+      certResolver: letsEncrypt
+
+traefik_fp_middlewares:
+  flame-auth:
+    basicAuth:
+      users:
+      - "{{ vault_flame_authbasic }}"
+
+traefik_fp_services:
+  flame:
+    loadBalancer:
+      servers:
+      - url: http://127.0.0.1:5005/
+      passHostHeader: true
+  nextcloud:
+    loadBalancer:
+      servers:
+      - url: http://127.0.0.1:1100/
+      passHostHeader: true
+  deluge:
+    loadBalancer:
+      servers:
+      - url: http://127.0.0.1:8112/
+      passHostHeader: true
+  bitwarden:
+    loadBalancer:
+      servers:
+      - url: http://127.0.0.1:8000/
+      passHostHeader: true
+  plex:
+    loadBalancer:
+      servers:
+      - url: http://127.0.0.1:32400/
+      passHostHeader: true
+  dash:
+    loadBalancer:
+      servers:
+      - url: http://127.0.0.1:8082/
+      passHostHeader: true

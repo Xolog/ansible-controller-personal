@@ -1,0 +1,35 @@
+#!/usr/bin/env -S ansible-playbook 
+#
+# Playbook to install and run Navidrome container on
+# target nodes. Run it like usual executable script:
+#
+# > ./run-navidrome.yml
+
+---
+- name: Configure target servers
+  hosts: navidrome_servers
+  become: yes
+  become_user: root
+
+  tasks:
+    - name: Start navidrome container
+      docker_compose:
+        state: present
+        project_name: Navidrome
+        definition:
+          version: "3"
+          services:
+            navidrome:
+              image: "deluan/navidrome:{{ navidrome_image_tag }}"
+              container_name: "{{ navidrome_container_name }}"
+              user: "33:33" 
+              ports:
+                - "4533:4533"
+              restart: unless-stopped
+              environment: "{{ navidrome_env }}"
+              volumes:
+                - "{{ navidrome_data_folder }}:/data"
+                - "{{ navidrome_music_folder }}:/music"
+
+      tags:
+        - navidrome

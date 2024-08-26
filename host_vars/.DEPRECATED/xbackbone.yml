@@ -1,0 +1,4 @@
+xbackbone_image: lscr.io/linuxserver/xbackbone:latest
+xbackbone_container_name: xbackbone
+xbackbone_config_dir: /var/lib/xbackbone
+xbackbone_listen_address: 127.0.0.1:8081

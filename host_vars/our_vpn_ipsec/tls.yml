@@ -1,0 +1,23 @@
+---
+tls_host:
+  - type: acme
+    acme_pre_hook: ""
+    acme_hooks: true
+    acme_account_email: one.914.mind@gmail.com
+    # acme_post_hook: "ipsec reload"
+    acme_post_hook: ""
+    target_ca_path: "/etc/ipsec.d/cacerts/ca.pem"
+    target_cert_path: "/etc/ipsec.d/certs/cert.pem"
+    target_key_path: "/etc/ipsec.d/private/private.pem"
+    target_dir: /etc/ssl_certs
+    target_format: nginx
+    target_key_name: private.pem
+    target_cert_name: fullchain.pem
+    acme_challenge: dns
+    acme_ch_dns_type: dns_cf
+    acme_ch_dns_vars:
+      CF_Token: "{{ vault_cf_token }}"
+      CF_Account_ID: "{{ vault_cf_account_id }}"
+      CF_Zone_ID: "{{ vault_cf_zone_id }}"
+    acme_domains:
+      - "ourvpn-ipsec.mnhycr.ru"
