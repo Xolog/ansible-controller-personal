@@ -29,6 +29,7 @@
               image: mirror.gcr.io/dockurr/dnsmasq
               container_name: "{{ dnsmasq_container_name }}"
               network_mode: host
+              restart: always
               cap_add:
                 - NET_ADMIN
               volumes:
