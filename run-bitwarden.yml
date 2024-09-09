@@ -22,7 +22,7 @@
           version: '2'
           services:
             bitwarden:
-              image: "vaultwarden/server:latest"
+              image: "vaultwarden/server:1.32.0"
               container_name: bitwarden
               ports:
                 # host:port
@@ -52,14 +52,3 @@
       tags:
         - docker
         - bitwarden
-
-
-https://gitlab.irealt.online
-a.duhanin - MbsWp9xAKrgxfL
-m.duhanin - J2zpctK5omcUXm
-t.zubrickaya - sLRKwm7j97NZ5N
-
-https://gitlab.kru.kortros.ru/
-a.duhanin - K3TdYQK526ZHHi 
-m.duhanin - v8EB6FyaievPv3
-t.zubrickaya - 37ty2zwgffg2sP

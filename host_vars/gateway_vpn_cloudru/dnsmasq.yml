@@ -17,4 +17,5 @@ dnsmasq_conf: |
   address=/deluge.mnhycr.ru/192.168.0.101
   address=/bitwarden.mnhycr.ru/192.168.0.101
   address=/dash.mnhycr.ru/192.168.0.101
+  address=/plex.mnhycr.ru/192.168.0.101
   address=/ourvpn-ipsec.mnhycr.ru/194.87.186.88
