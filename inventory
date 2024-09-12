@@ -1,9 +1,11 @@
 our_vpn
 our_vpn_ipsec
+our_vpn_fornex
 personal_hypervisor
 nextcloud
 gateway_vpn
 gateway_vpn_cloudru
+gateway_vpn_fornex
 
 [proxy]
 personal_hypervisor
@@ -12,6 +14,7 @@ personal_hypervisor
 our_vpn
 gateway_vpn
 gateway_vpn_cloudru
+gateway_vpn_fornex
 
 [nodes]
 nextcloud
@@ -31,6 +34,8 @@ gateway_vpn
 gateway_vpn_cloudru
 our_vpn_ipsec
 china_vpn
+our_vpn_fornex
+gateway_vpn_fornex
 
 [openvpn3_clients]
 personal_hypervisor
@@ -66,6 +71,7 @@ personal_hypervisor
 personal_hypervisor
 gateway_vpn
 gateway_vpn_cloudru
+gateway_vpn_fornex
 
 [xbackbone_servers]
 personal_hypervisor
