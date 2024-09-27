@@ -1,3 +1,4 @@
+[server_common]
 our_vpn
 our_vpn_ipsec
 our_vpn_fornex
@@ -18,9 +19,6 @@ gateway_vpn_fornex
 
 [nodes]
 nextcloud
-
-[nodes:vars]
-ansible_ssh_common_args='-o ProxyCommand="ssh -p 22 -W %h:%p -q drazin@192.168.0.103"'
 
 [nextcloud_servers]
 nextcloud
@@ -81,3 +79,6 @@ personal_hypervisor
 
 [shadowsocks_servers]
 our_vpn_ipsec
+
+[cron_hosts]
+gateway_vpn_cloudru

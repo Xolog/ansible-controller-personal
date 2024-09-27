@@ -1,0 +1,8 @@
+cronjobs:
+  name: restart-dnsmask
+  minute: '*'
+  hour: 4
+  day: '*'
+  month: '*'
+  weekday: '*'
+  job: docker restart dnsmasq
