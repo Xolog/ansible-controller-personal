@@ -8,6 +8,12 @@ traefik_file_provider:
   filename: "{{ traefik_dir }}/provider.yml"
   watch: True
 
+traefik_entrypoints:
+  http:
+    address: ":80"
+  https:
+    address: ":443"
+
 traefik_fp_routers:
   route-flame:
     middlewares: 
@@ -46,13 +52,6 @@ traefik_fp_routers:
     rule: Host(`plex.mnhycr.ru`)
     tls:
       certResolver: letsEncrypt
-  route-dash:
-    entryPoints:
-    - https
-    service: dash
-    rule: Host(`dash.mnhycr.ru`)
-    tls:
-      certResolver: letsEncrypt
 
 traefik_fp_middlewares:
   flame-auth:
@@ -85,9 +84,4 @@ traefik_fp_services:
     loadBalancer:
       servers:
       - url: http://127.0.0.1:32400/
-      passHostHeader: true
-  dash:
-    loadBalancer:
-      servers:
-      - url: http://127.0.0.1:8082/
       passHostHeader: true

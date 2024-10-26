@@ -1,0 +1,47 @@
+#!/usr/bin/env -S ansible-playbook 
+#
+# Playbook to install and run matrix synapse on
+# target nodes. Run it like usual executable script:
+#
+# > ./run-matrix-synapse.yml
+
+---
+- name: Configure target servers
+  hosts: matrix_synapses
+  become: yes
+  become_user: root
+
+  tasks:
+    - name: Generate matrix synapse
+      command: |
+        docker run -it --rm
+        --volume {{ matrix_dir }}:/data
+        -e SYNAPSE_SERVER_NAME={{ matrix_domain }}
+        -e SYNAPSE_REPORT_STATS=no
+        matrixdotorg/synapse:{{ matrix_tag }} generate
+
+    - name: Start matrix synapse
+      community.docker.docker_compose_v2:
+        state: present
+        project_name: matrix_synapse
+        definition:
+          version: '3.5'
+          services:
+            matrix_synapse:
+              image: "matrixdotorg/synapse:{{ matrix_tag }}"
+              container_name: "{{ matrix_container_name | default('matrix_synapse') }}"
+              ports:
+                - 127.0.0.1:8008:8008
+              volumes:
+                - "{{ matrix_dir }}:/data"
+              restart: 'always'
+
+            synapse-admin:
+              container_name: "{{ matrix_admin_container_name | default('matrix_synapse_admin') }}"
+              image: awesometechnologies/synapse-admin:{{ matrix_synapse_admin_tag }}
+              ports:
+                - "{{ matrix_synapse_admin_port }}:80"
+              restart: always
+
+      tags:
+        - matrix_synapse

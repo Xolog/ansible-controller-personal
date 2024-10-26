@@ -1,0 +1,279 @@
+nginx_auth_basic_files:
+  flame: "{{ vault_nginx_auth_basic_files.flame }}"
+
+nginx_maps: |
+  map $http_upgrade $connection_upgrade {
+      default upgrade;
+      '' close;
+  }
+
+nginx_sites:
+  mnhycr.ru:
+    - listen 80
+    - |
+      if ($scheme = "http") {
+          return 301 https://$host$request_uri;
+      }
+
+    - listen 443 ssl http2
+    - server_name mnhycr.ru
+    - auth_basic "Restricted"
+    - auth_basic_user_file auth_basic/flame
+    - |
+      location / {
+          resolver 127.0.0.53;
+          proxy_pass http://127.0.0.1:5005$request_uri;
+
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          client_max_body_size 0;
+
+          # Websocket
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection $connection_upgrade;
+      }
+
+    - ssl_certificate /etc/letsencrypt/live/mnhycr.ru/fullchain.pem   # managed by certbot on host machine
+    - ssl_certificate_key /etc/letsencrypt/live/mnhycr.ru/privkey.pem # managed by certbot on host machine
+
+    - ssl_session_timeout 1d
+    - ssl_session_cache shared:MozSSL:10m # about 40000 sessions
+    - ssl_session_tickets off
+
+    - ssl_protocols TLSv1.2 TLSv1.3
+    - ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+    - ssl_prefer_server_ciphers off
+
+  social.mnhycr.ru:
+    - listen 80
+    - |
+      if ($scheme = "http") {
+          return 301 https://$host$request_uri;
+      }
+
+    - listen 443 ssl http2
+    - server_name social.mnhycr.ru
+    - |
+      location / {
+          resolver 127.0.0.53;
+          proxy_pass http://127.0.0.1:8008$request_uri;
+
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          client_max_body_size 0;
+
+          # Websocket
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection $connection_upgrade;
+      }
+
+    - |
+      location /.well-known/matrix/client {
+        default_type application/json;
+        return 200 '{ "m.homeserver": { "base_url": "https://social.mnhycr.ru" },"org.matrix.msc2965.authentication": { "issuer": "https://social.mnhycr.ru/","account": "https://social.mnhycr.ru/account" } }';
+      }
+
+    - |
+      location /.well-known/matrix/server {
+        default_type application/json;
+        return 200 '{ "m.server": "https://social.mnhycr.ru" }';
+      }
+
+    - ssl_certificate /etc/letsencrypt/live/social.mnhycr.ru/fullchain.pem   # managed by certbot on host machine
+    - ssl_certificate_key /etc/letsencrypt/live/social.mnhycr.ru/privkey.pem # managed by certbot on host machine
+
+    - ssl_session_timeout 1d
+    - ssl_session_cache shared:MozSSL:10m # about 40000 sessions
+    - ssl_session_tickets off
+
+    - ssl_protocols TLSv1.2 TLSv1.3
+    - ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+    - ssl_prefer_server_ciphers off
+
+  admin.social.mnhycr.ru:
+    - listen 80
+    - |
+      if ($scheme = "http") {
+          return 301 https://$host$request_uri;
+      }
+
+    - listen 443 ssl http2
+    - server_name admin.social.mnhycr.ru
+    - |
+      location / {
+          resolver 127.0.0.53;
+          proxy_pass http://127.0.0.1:8088$request_uri;
+
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          client_max_body_size 0;
+
+          # Websocket
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection $connection_upgrade;
+      }
+
+    - ssl_certificate /etc/letsencrypt/live/admin.social.mnhycr.ru/fullchain.pem   # managed by certbot on host machine
+    - ssl_certificate_key /etc/letsencrypt/live/admin.social.mnhycr.ru/privkey.pem # managed by certbot on host machine
+
+    - ssl_session_timeout 1d
+    - ssl_session_cache shared:MozSSL:10m # about 40000 sessions
+    - ssl_session_tickets off
+
+    - ssl_protocols TLSv1.2 TLSv1.3
+    - ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+    - ssl_prefer_server_ciphers off
+
+  nextcloud.mnhycr.ru:
+    - listen 80
+    - |
+      if ($scheme = "http") {
+          return 301 https://$host$request_uri;
+      }
+
+    - listen 443 ssl http2
+    - server_name nextcloud.mnhycr.ru
+
+    - |
+      location / {
+          resolver 127.0.0.53;
+          proxy_pass http://localhost:1100$request_uri;
+
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          client_max_body_size 0;
+
+          # Websocket
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection $connection_upgrade;
+      }
+
+    - ssl_certificate /etc/letsencrypt/live/nextcloud.mnhycr.ru/fullchain.pem   # managed by certbot on host machine
+    - ssl_certificate_key /etc/letsencrypt/live/nextcloud.mnhycr.ru/privkey.pem # managed by certbot on host machine
+
+    - ssl_session_timeout 1d
+    - ssl_session_cache shared:MozSSL:10m # about 40000 sessions
+    - ssl_session_tickets off
+
+    - ssl_protocols TLSv1.2 TLSv1.3
+    - ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+    - ssl_prefer_server_ciphers off
+
+  # deluge.mnhycr.ru:
+  #   - listen 80
+  #   - |
+  #     if ($scheme = "http") {
+  #         return 301 https://$host$request_uri;
+  #     }
+
+  #   - listen 443 ssl http2
+  #   - server_name deluge.mnhycr.ru
+
+  #   - |
+  #     location / {
+  #         resolver 127.0.0.53;
+  #         proxy_pass http://localhost:8112$request_uri;
+
+  #         proxy_set_header Host $host;
+  #         proxy_set_header X-Real-IP $remote_addr;
+  #         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  #         client_max_body_size 0;
+
+  #         # Websocket
+  #         proxy_http_version 1.1;
+  #         proxy_set_header Upgrade $http_upgrade;
+  #         proxy_set_header Connection $connection_upgrade;
+  #     }
+
+  #   - ssl_certificate /etc/letsencrypt/live/deluge.mnhycr.ru/fullchain.pem   # managed by certbot on host machine
+  #   - ssl_certificate_key /etc/letsencrypt/live/deluge.mnhycr.ru/privkey.pem # managed by certbot on host machine
+
+  #   - ssl_session_timeout 1d
+  #   - ssl_session_cache shared:MozSSL:10m # about 40000 sessions
+  #   - ssl_session_tickets off
+
+  #   - ssl_protocols TLSv1.2 TLSv1.3
+  #   - ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+  #   - ssl_prefer_server_ciphers off
+
+  # bitwarden.mnhycr.ru:
+  #   - listen 80
+  #   - |
+  #     if ($scheme = "http") {
+  #         return 301 https://$host$request_uri;
+  #     }
+
+  #   - listen 443 ssl http2
+  #   - server_name bitwarden.mnhycr.ru
+
+  #   - |
+  #     location / {
+  #         resolver 127.0.0.53;
+  #         proxy_pass http://localhost:8000$request_uri;
+
+  #         proxy_set_header Host $host;
+  #         proxy_set_header X-Real-IP $remote_addr;
+  #         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  #         client_max_body_size 0;
+
+  #         # Websocket
+  #         proxy_http_version 1.1;
+  #         proxy_set_header Upgrade $http_upgrade;
+  #         proxy_set_header Connection $connection_upgrade;
+  #     }
+
+  #   - ssl_certificate /etc/letsencrypt/live/bitwarden.mnhycr.ru/fullchain.pem   # managed by certbot on host machine
+  #   - ssl_certificate_key /etc/letsencrypt/live/bitwarden.mnhycr.ru/privkey.pem # managed by certbot on host machine
+
+  #   - ssl_session_timeout 1d
+  #   - ssl_session_cache shared:MozSSL:10m # about 40000 sessions
+  #   - ssl_session_tickets off
+
+  #   - ssl_protocols TLSv1.2 TLSv1.3
+  #   - ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+  #   - ssl_prefer_server_ciphers off
+
+  # plex.mnhycr.ru:
+  #   - listen 80
+  #   - |
+  #     if ($scheme = "http") {
+  #         return 301 https://$host$request_uri;
+  #     }
+
+  #   - listen 443 ssl http2
+  #   - server_name plex.mnhycr.ru
+
+  #   - |
+  #     location / {
+  #         resolver 127.0.0.53;
+  #         proxy_pass http://localhost:32400$request_uri;
+
+  #         proxy_set_header Host $host;
+  #         proxy_set_header X-Real-IP $remote_addr;
+  #         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  #         client_max_body_size 0;
+
+  #         # Websocket
+  #         proxy_http_version 1.1;
+  #         proxy_set_header Upgrade $http_upgrade;
+  #         proxy_set_header Connection $connection_upgrade;
+  #     }
+
+  #   - ssl_certificate /etc/letsencrypt/live/plex.mnhycr.ru/fullchain.pem   # managed by certbot on host machine
+  #   - ssl_certificate_key /etc/letsencrypt/live/plex.mnhycr.ru/privkey.pem # managed by certbot on host machine
+
+  #   - ssl_session_timeout 1d
+  #   - ssl_session_cache shared:MozSSL:10m # about 40000 sessions
+  #   - ssl_session_tickets off
+
+  #   - ssl_protocols TLSv1.2 TLSv1.3
+  #   - ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+  #   - ssl_prefer_server_ciphers off

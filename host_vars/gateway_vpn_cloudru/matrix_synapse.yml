@@ -1,0 +1,8 @@
+matrix_domain: social.mnhycr.ru
+matrix_dir: /data/matrix
+matrix_tag: v1.116.0rc2
+matrix_synapse_admin_tag: 0.10.3
+matrix_synapse_admin_port: 127.0.0.1:8088
+
+mautrix_telegram_version: v0.15.2
+mautrix_dir: /data/mautrix_telegram

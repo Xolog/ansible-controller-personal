@@ -1,0 +1,47 @@
+#!/usr/bin/env -S ansible-playbook 
+#
+---
+- name: Setup Nginx Container
+  hosts: nginx-container
+  remote_user: root
+  tasks:
+
+  - name: Ensure config directory exists
+    ansible.builtin.file:
+      path: "{{ item }}"
+      state: directory
+      mode: '0755'
+    loop:
+    - "{{ nginx_configdir_path | default('/etc/nginx') }}"
+    - "{{ nginx_configdir_path | default('/etc/nginx/conf.d') }}"
+
+  - name: Create nginx.conf
+    copy:
+      dest: "{{ nginx_configdir_path | default('/etc/nginx') }}/nginx.conf"
+      content: "{{ nginx_main_conf | default('Empty') }}"
+
+  - name: Create default.conf
+    copy:
+      dest: "{{ nginx_configdir_path | default('/etc/nginx') }}/conf.d/default.conf"
+      content: "{{ nginx_default_conf | default('Empty') }}" 
+
+  - name: Start Nginx docker compose
+    community.docker.docker_compose_v2:
+      state: present
+      project_name: nginx
+      definition:
+        version: '3.5'
+        services:
+          nginx:
+            image: "nginx:{{ nginx_image_tag | default('latest') }}"
+            container_name: "{{ nginx_container_name | default('nginx') }}"
+            volumes: "{{ nginx_volumes | default('[]') }}"
+            ports:
+              - "{{ nginx_listen_address | default('127.0.0.1') }}:{{ nginx_listen_port | default('80') }}:80"
+            restart: unless-stopped
+            labels: "{{ nginx_container_labels | default('[]') }}"
+
+  - name: Restart nginx
+    community.docker.docker_container:
+      name: nginx
+      restart: true

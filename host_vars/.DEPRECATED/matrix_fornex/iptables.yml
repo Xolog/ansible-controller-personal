@@ -1,0 +1,2 @@
+iptables:
+  default_allowed_tcp_ports: [22,443,80,8448,8008]

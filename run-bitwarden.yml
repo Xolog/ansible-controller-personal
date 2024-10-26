@@ -15,7 +15,7 @@
 
   tasks:
     - name: Ensure bitwarden docker container
-      community.docker.docker_compose:
+      community.docker.docker_compose_v2:
         state: present
         project_name: bitwarden
         definition:
@@ -26,7 +26,7 @@
               container_name: bitwarden
               ports:
                 # host:port
-                - "127.0.0.1:8000:80"
+                - "0.0.0.0:8000:80"
               volumes:
                 - "/bitwarden/:/data"
               environment:

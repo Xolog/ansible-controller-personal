@@ -7,6 +7,7 @@ nextcloud
 gateway_vpn
 gateway_vpn_cloudru
 gateway_vpn_fornex
+matrix_fornex
 
 [proxy]
 personal_hypervisor
@@ -24,6 +25,7 @@ nextcloud
 nextcloud
 
 [docker_hosts]
+matrix_fornex
 our_vpn
 test_local_vm
 nextcloud
@@ -57,7 +59,7 @@ personal_hypervisor
 personal_hypervisor
 
 [flame_servers]
-personal_hypervisor
+gateway_vpn_cloudru
 
 [plex_servers]
 personal_hypervisor
@@ -82,3 +84,10 @@ our_vpn_ipsec
 
 [cron_hosts]
 gateway_vpn_cloudru
+
+[matrix_synapses]
+gateway_vpn_cloudru
+
+[nginx-container]
+matrix_fornex
+personal_hypervisor

@@ -13,7 +13,7 @@
 
   tasks:
     - name: Start flame container
-      docker_compose:
+      community.docker.docker_compose_v2:
         state: present
         project_name: flame
         definition:
@@ -26,7 +26,7 @@
                 - /data/flame:/app/data
                 - /var/run/docker.sock:/var/run/docker.sock
               ports:
-                - 5005:5005
+                - 127.0.0.1:5005:5005
               environment:
                 - "PASSWORD={{ vault_flame_password }}"
               restart: unless-stopped

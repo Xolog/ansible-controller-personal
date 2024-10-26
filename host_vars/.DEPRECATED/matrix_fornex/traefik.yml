@@ -1,0 +1,72 @@
+---
+traefik_host_network_mode_host: True
+traefik_dashboard: True
+
+traefik_tls_acme_mail: one.914.mind@gmail.com
+
+traefik_file_provider: 
+  filename: "{{ traefik_dir }}/provider.yml"
+  watch: True
+
+traefik_entrypoints:
+  http:
+    address: ":80"
+  https:
+    address: ":443"
+  matrix:
+    address: ":8008"
+  matrix-federation:
+    address: ":8448"
+
+traefik_fp_routers:
+  route-matrix-well-known:
+    entryPoints:
+    - https
+    service: matrix-well-known
+    rule: Host(`social.mnhycr.ru`) && PathPrefix(`/.well-known`)
+    tls:
+      certResolver: letsEncrypt
+  route-matrix:
+    entryPoints:
+    - matrix
+    service: matrix
+    rule: Host(`social.mnhycr.ru`)
+    tls:
+      certResolver: letsEncrypt
+  route-matrix-federation:
+    entryPoints:
+    - matrix-federation
+    - https
+    service: matrix-federation
+    rule: Host(`social.mnhycr.ru`)
+    tls:
+      certResolver: letsEncrypt
+  route-matrix-admin:
+    entryPoints:
+    - https
+    service: matrix-admin
+    rule: Host(`admin.social.mnhycr.ru`)
+    tls:
+      certResolver: letsEncrypt
+
+traefik_fp_services:
+  matrix-well-known:
+    loadBalancer:
+      servers:
+      - url: http://127.0.0.1:8888/
+      passHostHeader: true
+  matrix:
+    loadBalancer:
+      servers:
+      - url: http://127.0.0.1:800/
+      passHostHeader: true
+  matrix-federation:
+    loadBalancer:
+      servers:
+      - url: http://127.0.0.1:800/
+      passHostHeader: true
+  matrix-admin:
+    loadBalancer:
+      servers:
+      - url: http://127.0.0.1:8088/
+      passHostHeader: true
