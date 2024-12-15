@@ -1,4 +1,0 @@
-dashdot_port: 127.0.0.1:8082:3001
-dashdot_env:
-  DASHDOT_PAGE_TITLE: srv-mnhycr
-  DASHDOT_ENABLE_CPU_TEMPS: "True"

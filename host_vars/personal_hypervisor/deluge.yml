@@ -1,4 +1,0 @@
-deluge_image_tag: latest
-deluge_container_name: deluge
-deluge_data_volume: /data/deluge
-deluge_downloads_volume: /data/nextcloud-mount/torrents 

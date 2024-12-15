@@ -1,8 +1,8 @@
 ---
-ansible_ip: 192.168.0.101
-ansible_host: 192.168.0.101
+ansible_ip: 192.168.1.170
+ansible_host: 192.168.1.170
 ansible_port: 22
-ansible_user: mnhycr
+ansible_user: xolog
 ansible_sudo_pass: "{{ vault_admin_password }}"
 ansible_ssh_pass: "{{ vault_admin_password }}"
 ansible_become: true
@@ -12,9 +12,10 @@ packages:
   - sysstat
   - iotop
   - iftop
-  - python
   - git
   - curl
 
 users:
-  mnhycr: "{{ vault_mnhycr }}"
+  xolog: "{{ vault_xolog }}"
+
+dns_hostname: personal_pi

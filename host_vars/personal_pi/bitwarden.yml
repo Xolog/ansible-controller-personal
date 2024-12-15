@@ -1,0 +1,8 @@
+yubico_client_id: not_used
+yubico_secret_key: not_used
+signups_allowed: true
+# domain: https://bitwarden.mnhycr.ru
+
+# smtp_host: smtp.yandex.com
+# smtp_port: 465
+# smtp_security: force_tls

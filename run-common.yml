@@ -16,24 +16,6 @@
       tags:
         - packages
 
-    - name: Set hostname
-      hostname:
-        name: "{{ dns_hostname }}"
-      tags:
-        - hostname
-
-    - name: Add hostname to hosts
-      lineinfile:
-        path: /etc/hosts
-        regexp: '^127\.0\.1\.1'
-        line: "127.0.1.1 {{ dns_hostname }}"
-        owner: root
-        group: root
-        mode: 0644
-        insertafter: '^127\.0\.0\.1'
-      tags:
-        - hostname
-
     - name: Create users
       user:
         name: "{{ item.value.name }}"
